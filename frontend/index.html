@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>CRM Dashboard</title>
+
+```
+<style>
+    body {
+        font-family: Arial;
+        background: #f4f7fb;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .box {
+        background: white;
+        padding: 20px;
+        margin: 15px auto;
+        width: 80%;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    input {
+        padding: 8px;
+        margin: 5px;
+    }
+
+    button {
+        padding: 8px 12px;
+        margin: 5px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .add { background: green; color: white; }
+    .edit { background: blue; color: white; }
+    .delete { background: red; color: white; }
+
+    table {
+        width: 100%;
+        margin-top: 10px;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background: #4CAF50;
+        color: white;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<h1>CRM System</h1>
+
+<div class="box">
+    <h3>Add Customer</h3>
+    <input type="text" id="name" placeholder="Name">
+    <input type="email" id="email" placeholder="Email">
+    <button class="add" onclick="addCustomer()">Add</button>
+</div>
+
+<div class="box">
+    <h3>Search</h3>
+    <input type="text" id="search" placeholder="Search name/email">
+    <button onclick="searchCustomer()">Search</button>
+    <button onclick="loadCustomers()">Reset</button>
+</div>
+
+<div class="box">
+    <h3>Customers</h3>
+
+```
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody id="tableBody"></tbody>
+</table>
+
+<br>
+<button onclick="prevPage()">⬅ Prev</button>
+<button onclick="nextPage()">Next ➡</button>
+```
+
+</div>
+
+<script>
+    const API = "http://127.0.0.1:8000";
+    let page = 0;
+
+    async function loadCustomers() {
+        let res = await fetch(API + `/customers?skip=${page*5}&limit=5`);
+        let data = await res.json();
+
+        renderTable(data);
+    }
+
+    function renderTable(data) {
+        let table = document.getElementById("tableBody");
+        table.innerHTML = "";
+
+        data.forEach(c => {
+            table.innerHTML += `
+                <tr>
+                    <td>${c.id}</td>
+                    <td>${c.name}</td>
+                    <td>${c.email}</td>
+                    <td>
+                        <button class="edit" onclick="editCustomer(${c.id})">Edit</button>
+                        <button class="delete" onclick="deleteCustomer(${c.id})">Delete</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    async function addCustomer() {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+
+        await fetch(API + "/add-customer", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({name, email})
+        });
+
+        loadCustomers();
+    }
+
+    async function deleteCustomer(id) {
+        await fetch(API + `/delete-customer/${id}`, {
+            method: "DELETE"
+        });
+
+        loadCustomers();
+    }
+
+    async function editCustomer(id) {
+        let name = prompt("New name:");
+        let email = prompt("New email:");
+
+        await fetch(API + `/update-customer/${id}`, {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({name, email})
+        });
+
+        loadCustomers();
+    }
+
+    async function searchCustomer() {
+        let query = document.getElementById("search").value;
+
+        let res = await fetch(API + `/search?query=${query}`);
+        let data = await res.json();
+
+        renderTable(data);
+    }
+
+    function nextPage() {
+        page++;
+        loadCustomers();
+    }
+
+    function prevPage() {
+        if(page > 0) page--;
+        loadCustomers();
+    }
+
+    loadCustomers();
+</script>
+
+</body>
+</html>
