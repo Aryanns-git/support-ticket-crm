@@ -80,6 +80,10 @@ def delete_ticket(ticket_id: str, db: Session = Depends(get_db)):
 
     return {"message": "Ticket deleted"}
 
+@app.get("/ticket-details")
+def ticket_details_page():
+    return FileResponse("templates/ticket_details.html")
+
 @app.put("/api/tickets/{ticket_id}")
 def update_ticket(ticket_id: str, data: schemas.TicketUpdate, db: Session = Depends(get_db)):
     ticket = db.query(models.Ticket).filter(models.Ticket.ticket_id == ticket_id).first()
