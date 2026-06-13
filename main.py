@@ -22,8 +22,14 @@ def home():
 
 @app.post("/api/tickets")
 def create_ticket(ticket: schemas.TicketCreate, db: Session = Depends(get_db)):
-    count = db.query(models.Ticket).count() + 1
-    ticket_id = f"TKT-{count:03d}"
+    last_ticket = db.query(models.Ticket).order_by(models.Ticket.id.desc()).first()
+
+    if last_ticket:
+        new_number = last_ticket.id + 1
+    else:
+        new_number = 1
+
+    ticket_id = f"TKT-{new_number:03d}"
 
     new_ticket = models.Ticket(
         ticket_id=ticket_id,
@@ -39,6 +45,7 @@ def create_ticket(ticket: schemas.TicketCreate, db: Session = Depends(get_db)):
     db.add(new_ticket)
     db.commit()
     db.refresh(new_ticket)
+
     return new_ticket
 
 @app.get("/api/tickets")
