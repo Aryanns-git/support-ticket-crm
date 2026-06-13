@@ -19,10 +19,12 @@
 
 <div class="box">
     <h2>Create Ticket</h2>
-    <input id="name" placeholder="Customer Name">
-    <input id="email" placeholder="Customer Email">
-    <input id="subject" placeholder="Issue Subject">
-    <input id="description" placeholder="Description">
+
+    <input id="name" placeholder="Customer Name" required>
+    <input id="email" placeholder="Customer Email" required>
+    <input id="subject" placeholder="Issue Subject" required>
+    <input id="description" placeholder="Description" required>
+
     <button onclick="createTicket()">Create Ticket</button>
 </div>
 
@@ -68,11 +70,21 @@
 const API_URL = "https://support-ticket-crm-wkkq.onrender.com";
 
 async function createTicket() {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const description = document.getElementById("description").value.trim();
+
+    if (!name || !email || !subject || !description) {
+        alert("All fields are mandatory. Please fill all ticket details.");
+        return;
+    }
+
     const data = {
-        customer_name: document.getElementById("name").value,
-        customer_email: document.getElementById("email").value,
-        subject: document.getElementById("subject").value,
-        description: document.getElementById("description").value
+        customer_name: name,
+        customer_email: email,
+        subject: subject,
+        description: description
     };
 
     await fetch(API_URL + "/api/tickets", {
@@ -83,7 +95,6 @@ async function createTicket() {
 
     loadTickets();
 }
-
 async function loadTickets() {
     const search = document.getElementById("search").value;
     const status = document.getElementById("statusFilter").value;
