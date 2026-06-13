@@ -61,6 +61,7 @@
             <th>Date</th>
             <th>Update</th>
             <th>View</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody id="ticketTable"></tbody>
@@ -95,6 +96,19 @@ async function createTicket() {
 
     loadTickets();
 }
+
+async function deleteTicket(ticketId) {
+    if (!confirm("Are you sure you want to delete this ticket?")) {
+        return;
+    }
+
+    await fetch(API_URL + `/api/tickets/${ticketId}`, {
+        method: "DELETE"
+    });
+
+    loadTickets();
+}
+
 async function loadTickets() {
     const search = document.getElementById("search").value;
     const status = document.getElementById("statusFilter").value;
@@ -121,9 +135,12 @@ async function loadTickets() {
                         <option ${t.status === "Closed" ? "selected" : ""}>Closed</option>
                     </select>
                 </td>
-                <td>
-                    <button onclick="viewTicket('${t.ticket_id}')">View</button>
-                </td>
+               <td>
+    <button onclick="viewTicket('${t.ticket_id}')">View</button>
+</td>
+<td>
+    <button onclick="deleteTicket('${t.ticket_id}')">Delete</button>
+</td>
             </tr>
         `;
     });

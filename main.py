@@ -68,6 +68,18 @@ def get_ticket(ticket_id: str, db: Session = Depends(get_db)):
 
     return ticket
 
+@app.delete("/api/tickets/{ticket_id}")
+def delete_ticket(ticket_id: str, db: Session = Depends(get_db)):
+    ticket = db.query(models.Ticket).filter(models.Ticket.ticket_id == ticket_id).first()
+
+    if not ticket:
+        return {"error": "Ticket not found"}
+
+    db.delete(ticket)
+    db.commit()
+
+    return {"message": "Ticket deleted"}
+
 @app.put("/api/tickets/{ticket_id}")
 def update_ticket(ticket_id: str, data: schemas.TicketUpdate, db: Session = Depends(get_db)):
     ticket = db.query(models.Ticket).filter(models.Ticket.ticket_id == ticket_id).first()
