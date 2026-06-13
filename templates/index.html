@@ -138,7 +138,7 @@ async function loadTickets() {
                     </select>
                 </td>
                <td>
-    <button onclick="viewTicket('${t.ticket_id}')">View</button>
+    <<button onclick="window.open('/ticket-details?ticket_id=${t.ticket_id}', '_blank')">View</button>
 </td>
 <td>
     <button onclick="deleteTicket('${t.ticket_id}')">Delete</button>
