@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket Details</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f7fb;
+            padding: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 60%;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        p {
+            font-size: 18px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Ticket Details</h1>
+
+    <p><b>Ticket ID:</b> <span id="ticket_id">Loading...</span></p>
+    <p><b>Name:</b> <span id="name">Loading...</span></p>
+    <p><b>Email:</b> <span id="email">Loading...</span></p>
+    <p><b>Subject:</b> <span id="subject">Loading...</span></p>
+    <p><b>Description:</b> <span id="description">Loading...</span></p>
+    <p><b>Status:</b> <span id="status">Loading...</span></p>
+    <p><b>Created At:</b> <span id="created_at">Loading...</span></p>
+
+    <button onclick="window.close()">Close</button>
+    <button onclick="window.location.href='/'">Back to Home</button>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const ticketId = params.get("ticket_id");
+
+async function loadTicket() {
+    if (!ticketId) {
+        alert("Ticket ID missing in URL");
+        return;
+    }
+
+    const res = await fetch(`/api/tickets/${ticketId}`);
+    const t = await res.json();
+
+    if (t.error) {
+        alert("Ticket not found");
+        return;
+    }
+
+    document.getElementById("ticket_id").innerText = t.ticket_id;
+    document.getElementById("name").innerText = t.customer_name;
+    document.getElementById("email").innerText = t.customer_email;
+    document.getElementById("subject").innerText = t.subject;
+    document.getElementById("description").innerText = t.description;
+    document.getElementById("status").innerText = t.status;
+    document.getElementById("created_at").innerText = t.created_at;
+}
+
+loadTicket();
+</script>
+
+</body>
+</html>
