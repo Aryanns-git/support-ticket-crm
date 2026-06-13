@@ -40,16 +40,6 @@
     </select>
 </div>
 
-<div class="box" id="detailBox">
-    <h2>Ticket Details</h2>
-    <p><b>Ticket ID:</b> <span id="detailTicketId"></span></p>
-    <p><b>Name:</b> <span id="detailName"></span></p>
-    <p><b>Email:</b> <span id="detailEmail"></span></p>
-    <p><b>Subject:</b> <span id="detailSubject"></span></p>
-    <p><b>Description:</b> <span id="detailDescription"></span></p>
-    <p><b>Status:</b> <span id="detailStatus"></span></p>
-    <button onclick="hideDetails()">Close</button>
-</div>
 
 <table>
     <thead>
@@ -158,23 +148,6 @@ async function updateStatus(ticketId, status) {
     loadTickets();
 }
 
-async function viewTicket(ticketId) {
-    const res = await fetch(API_URL + `/api/tickets/${ticketId}`);
-    const t = await res.json();
-
-    document.getElementById("detailTicketId").innerText = t.ticket_id;
-    document.getElementById("detailName").innerText = t.customer_name;
-    document.getElementById("detailEmail").innerText = t.customer_email;
-    document.getElementById("detailSubject").innerText = t.subject;
-    document.getElementById("detailDescription").innerText = t.description;
-    document.getElementById("detailStatus").innerText = t.status;
-
-    document.getElementById("detailBox").style.display = "block";
-}
-
-function hideDetails() {
-    document.getElementById("detailBox").style.display = "none";
-}
 
 function resetForm() {
     document.getElementById("name").value = "";
