@@ -79,14 +79,20 @@ async function createTicket() {
         description: description
     };
 
-    await fetch(API_URL + "/api/tickets", {
+    const response = await fetch(API_URL + "/api/tickets", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data)
     });
 
-    loadTickets();
+    if (!response.ok) {
+        alert("Ticket was not created. Please check backend/API error.");
+        return;
+    }
+
+    await loadTickets();
     resetForm();
+    alert("Ticket created successfully!");
 }
 
 async function deleteTicket(ticketId) {
