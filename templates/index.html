@@ -26,6 +26,7 @@
     <input id="description" placeholder="Description" required>
 
     <button onclick="createTicket()">Create Ticket</button>
+    <button onclick="resetForm()"> Reset </button>
 </div>
 
 <div class="box">
@@ -95,6 +96,7 @@ async function createTicket() {
     });
 
     loadTickets();
+    resetForm();
 }
 
 async function deleteTicket(ticketId) {
@@ -172,6 +174,13 @@ async function viewTicket(ticketId) {
 
 function hideDetails() {
     document.getElementById("detailBox").style.display = "none";
+}
+
+function resetForm() {
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("subject").value = "";
+    document.getElementById("description").value = "";
 }
 
 loadTickets();
